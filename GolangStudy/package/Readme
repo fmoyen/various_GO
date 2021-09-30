@@ -1,0 +1,65 @@
+------------------------------------------------------------------------------------------------------------------------------
+You may directly run the package_example.go
+You need to define the used package in $GOPATH/src/<package_dir>
+
+[fabrice@FabT480 package] echo $GOPATH
+/home/fabrice/go
+
+[fabrice@FabT480 ~] mkdir -p $GOPATH/src/calculation
+
+[fabrice@FabT480 package] cp calc.go ~/go/src/calculation/
+
+[fabrice@FabT480 package] go run package_example.go 
+Sum 25
+calculation.Calculs 25
+
+------------------------------------------------------------------------------------------------------------------------------
+You may compile the package_example.go
+You need to define the used package in $GOPATH/src/<package_dir> in order to compile the main function that is using it
+
+[fabrice@FabT480 package] go install package_example.go 
+package_example.go:4:8: cannot find package "calculation" in any of:
+	/usr/lib/golang/src/calculation (from $GOROOT)
+	/home/fabrice/go/src/calculation (from $GOPATH)
+
+[fabrice@FabT480 package] echo $GOPATH
+/home/fabrice/go
+
+[fabrice@FabT480 ~] mkdir -p $GOPATH/src/calculation
+
+[fabrice@FabT480 package] cp calc.go ~/go/src/calculation/
+
+[fabrice@FabT480 package] echo $GOBIN 
+/home/fabrice/bin
+
+[fabrice@FabT480 package] go install package_example.go
+
+[fabrice@FabT480 package] ls -la $GOBIN/package_example 
+-rwxrwxr-x. 1 fabrice fabrice 2034713 13 janv. 16:16 /home/fabrice/bin/package_example
+
+[fabrice@FabT480 package] file $GOBIN/package_example 
+/home/fabrice/bin/package_example: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=hWENiZxs5DLOu0Mh3Ytg/96MSTSJQMEIZzApvqdJV/Xj7J408Qz3lmPxqYXwJD/T_6gFRBWFk6WidJJKnnV, not stripped
+
+[fabrice@FabT480 ~] rm -rf $GOPATH/src/calculation
+
+[fabrice@FabT480 package] /home/fabrice/bin/package_example
+Sum 25
+calculation.Calculs 25
+
+------------------------------------------------------------------------------------------------------------------------------
+You may redefine GOPATH and GOBIN variables in order to do compilation stuff in local directory
+
+[fabrice@FabT480 package] ls -la src/calculation/calc.go 
+-rw-rw-r--. 1 fabrice fabrice 137 17 nov.  11:08 src/calculation/calc.go
+
+[fabrice@FabT480 package] cat build.bash 
+#!/bin/bash
+
+prog=package_example.go
+export GOBIN=$PWD/bin
+export GOPATH=$PWD
+
+mkdir -p $GOBIN
+
+go install $prog
+
