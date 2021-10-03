@@ -1,3 +1,7 @@
+// Chiffre de Cesar
+// Author: Fabrice MOYEN
+// 2021/10/03
+
 package main
 import (
 	"fmt"
