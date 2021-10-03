@@ -10,6 +10,8 @@ package main
 import (
 	"fmt"
 	"os"
+	"bufio"
+	//"strings"
 )
 
 func main() {
@@ -66,6 +68,7 @@ func main() {
 	fmt.Println()
 
 	var Message string
+	var MessageOutput string
 	var action int
 
 	fmt.Println("------------------------------------------------------------------------------------------------------------")
@@ -83,27 +86,52 @@ func main() {
 	// CRYPTING
 	if action==1 {
 		fmt.Println("Which message do you want me to crypt:")
-		fmt.Scanln(&MessageProvided)
+		scanner := bufio.NewScanner(os.Stdin)
+		if scanner.Scan() {
+			MessageProvided = scanner.Text()
+		}
+		//fmt.Scanln(&MessageProvided) // fmt functions does not support white spaces on purpose
 		fmt.Println("------------------------------------------------------------------------------------------------------------")
 
 		Message = ""
 		for _,c := range MessageProvided {
-			Message = Message + Key[string(c)]
+			if string(c) != " " {
+				Message = Message + Key[string(c)]
+			}
+		}
+
+		count := 0
+		MessageOutput = ""
+		for _,c := range Message {
+			count = count + 1
+			MessageOutput = MessageOutput + string(c)
+			if count == 5 {
+				count = 0
+				MessageOutput = MessageOutput + " "
+			}
 		}
 
 		fmt.Println("Clear Message Provided:   ", MessageProvided, " --> Encrypted Message: ", Message)
+		fmt.Println("Clear Message Provided:   ", MessageProvided, " --> Encrypted Message Output: ", MessageOutput)
 		fmt.Println()
 
 	// DECRYPTING
 	} else if action==2 {
 		fmt.Println("Give me the crypted message you want me to decrypt:")
-		fmt.Scanln(&MessageCryptedProvided)
+		scanner := bufio.NewScanner(os.Stdin)
+		if scanner.Scan() {
+			MessageCryptedProvided = scanner.Text()
+		}
+		//fmt.Scanln(&MessageCryptedProvided)
 		fmt.Println("------------------------------------------------------------------------------------------------------------")
 
 		Message = ""
 		for _,c := range MessageCryptedProvided {
-			Message = Message + DecryptKey[string(c)]
+			if string(c) != " " {
+				Message = Message + DecryptKey[string(c)]
+			}
 		}
+
 
 		fmt.Println("Crypted Message Provided: ", MessageCryptedProvided, " --> Decrypted Message: ", Message)
 		fmt.Println()
