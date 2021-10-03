@@ -11,16 +11,28 @@ import (
 	"fmt"
 	"os"
 	"bufio"
-	//"strings"
 )
 
 func main() {
+	// #########################################################################################################################
+	// Variables
+	var Message string
+	var MessageOutput string
+	var MessageProvided string
+	var MessageCryptedProvided string
+	var action int
+	var count int
+
+	// #########################################################################################################################
+	// Introduction
 	fmt.Println()
 	fmt.Println("------------------------------------------------------------------------------------------------------------")
 	fmt.Println("Chiffrement par substitution")
 	fmt.Println("La clé est le tableau de substitution")
-	fmt.Println()
 
+	// #########################################################################################################################
+	// Crypting map = encryption key
+	fmt.Println()
 	fmt.Println("------------------------------------------------------------------------------------------------------------")
 	Key := map[string]string {
 		"a" : "r",
@@ -52,6 +64,7 @@ func main() {
 	}
 	fmt.Println("           key: ",Key)
 
+	// #########################################################################################################################
 	// Building the reverse map for decrypting operations
 	DecryptKey := make(map[string]string,len(Key))
 	for k,v := range Key {
@@ -60,38 +73,35 @@ func main() {
 	fmt.Println("Decrypting key: ",DecryptKey)
 	fmt.Println()
 
-
-	MessageProvided := "jesuisvenujaivujaivaincu"
-	var MessageCryptedProvided string
-	fmt.Println("Example of message: ",MessageProvided)
-	fmt.Println("Warning: no uppercase, just letters from 'a' to 'z' or white space ' '")
+	// #########################################################################################################################
+	// Asking for what to do
 	fmt.Println()
-
-	var Message string
-	var MessageOutput string
-	var action int
-
 	fmt.Println("------------------------------------------------------------------------------------------------------------")
 	fmt.Println("Do you want to:")
 	fmt.Println("  1- crypt")
 	fmt.Println("  2- decrypt")
 	fmt.Print("?: ")
 	fmt.Scanln(&action)
+	fmt.Println()
 
 	if action!=1 && action!=2 {
 		fmt.Println ("Acceptable answer should be 1 or 2. Exiting...")
 		os.Exit(1)
 	}
 
+	// #########################################################################################################################
 	// CRYPTING
 	if action==1 {
+		MessageProvided = "je suis venu jai vu jai vaincu"
+		fmt.Println("Example of message: ",MessageProvided)
+		fmt.Println("Warning: no uppercase, just letters from 'a' to 'z' or white space ' '")
+		fmt.Println()
 		fmt.Println("Which message do you want me to crypt:")
 		scanner := bufio.NewScanner(os.Stdin)
 		if scanner.Scan() {
 			MessageProvided = scanner.Text()
 		}
 		//fmt.Scanln(&MessageProvided) // fmt functions does not support white spaces on purpose
-		fmt.Println("------------------------------------------------------------------------------------------------------------")
 
 		Message = ""
 		for _,c := range MessageProvided {
@@ -100,7 +110,7 @@ func main() {
 			}
 		}
 
-		count := 0
+		count = 0
 		MessageOutput = ""
 		for _,c := range Message {
 			count = count + 1
@@ -111,10 +121,12 @@ func main() {
 			}
 		}
 
+		fmt.Println()
+		fmt.Println("------------------------------------------------------------------------------------------------------------")
 		fmt.Println("Clear Message Provided:   ", MessageProvided, " --> Encrypted Message: ", Message)
 		fmt.Println("Clear Message Provided:   ", MessageProvided, " --> Encrypted Message Output: ", MessageOutput)
-		fmt.Println()
 
+	// #########################################################################################################################
 	// DECRYPTING
 	} else if action==2 {
 		fmt.Println("Give me the crypted message you want me to decrypt:")
@@ -122,8 +134,6 @@ func main() {
 		if scanner.Scan() {
 			MessageCryptedProvided = scanner.Text()
 		}
-		//fmt.Scanln(&MessageCryptedProvided)
-		fmt.Println("------------------------------------------------------------------------------------------------------------")
 
 		Message = ""
 		for _,c := range MessageCryptedProvided {
@@ -132,11 +142,12 @@ func main() {
 			}
 		}
 
-
-		fmt.Println("Crypted Message Provided: ", MessageCryptedProvided, " --> Decrypted Message: ", Message)
 		fmt.Println()
+		fmt.Println("------------------------------------------------------------------------------------------------------------")
+		fmt.Println("Crypted Message Provided: ", MessageCryptedProvided, " --> Decrypted Message: ", Message)
 
 	}
 
 	fmt.Println()
+	fmt.Println("------------------------------------------------------------------------------------------------------------")
 }
