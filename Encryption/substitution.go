@@ -124,7 +124,7 @@ func main() {
 		fmt.Println()
 		fmt.Println("------------------------------------------------------------------------------------------------------------")
 		fmt.Println("Clear Message Provided:   ", MessageProvided, " --> Encrypted Message: ", Message)
-		fmt.Println("Clear Message Provided:   ", MessageProvided, " --> Encrypted Message Output: ", MessageOutput)
+		fmt.Println("Clear Message Provided:   ", MessageProvided, " --> Encrypted Formatted Output: ", MessageOutput)
 
 	// #########################################################################################################################
 	// DECRYPTING
