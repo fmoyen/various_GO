@@ -1,6 +1,7 @@
 // Chiffre de Cesar
 // Author: Fabrice MOYEN
 // 2021/10/03
+// Taille de l'espace de clé: 26 => Attaque par force brute possible
 
 package main
 import (
@@ -14,7 +15,7 @@ func main() {
 	var AlphabetDecrypted [26] string
 	MessageProvided := "jesuisvenujaivujaivaincu"
 	MessageCryptedProvided := "rmacqadmvcriqdcriqdiqvkc"
-	fmt.Println("Exemple of messages: ",MessageProvided," --(key=8)--> ", MessageCryptedProvided)
+	fmt.Println("Example of messages: ",MessageProvided," --(key=8)--> ", MessageCryptedProvided)
 	fmt.Println("Warning: no space, no uppercase, just letters from 'a' to 'z'")
 	var Message string
 	var action int
