@@ -64,7 +64,7 @@ func main() {
 	MessageProvided := "jesuisvenujaivujaivaincu"
 	var MessageCryptedProvided string
 	fmt.Println("Example of message: ",MessageProvided)
-	fmt.Println("Warning: no space, no uppercase, just letters from 'a' to 'z'")
+	fmt.Println("Warning: no uppercase, just letters from 'a' to 'z' or white space ' '")
 	fmt.Println()
 
 	var Message string
