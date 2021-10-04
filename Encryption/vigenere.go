@@ -1,12 +1,21 @@
-// Chiffre de Vigenère
-// Author: Fabrice MOYEN
-// 2021/10/03
-// Chiffrage par substitution où chaque lettre du message est codé grace à la lettre correspondante de la clé
-//   - Le chiffrement consiste à additionner chaque lettre du message avec la lettre de la clé en dessous, modulo 26
-//   - Le déchiffrement consiste à soustraire chaque lettre du message chiffré avec la lettre de la clé en dessous, modulo 26
-//
-//   => Attaque par force brute impossible sans moyens informatiques
-//   => Attaque par analyse fréquentielle des lettres facilitée si on connait la longueur de la clé
+/*
+##################################################################################################################################
+Chiffre de Vigenère
+
+Author: Fabrice MOYEN
+Date: 2021/10/03
+
+Chiffrage par substitution où chaque lettre du message est codé grace à la lettre correspondante de la clé
+  - Le chiffrement consiste à additionner chaque lettre du message avec la lettre de la clé en dessous, modulo 26
+  - Le déchiffrement consiste à soustraire chaque lettre du message chiffré avec la lettre de la clé en dessous, modulo 26
+
+  => Attaque par force brute impossible sans moyens informatiques
+  => Attaque par analyse fréquentielle des lettres facilitée si on connait la longueur de la clé
+
+À partir du XIXe siècle, on utilise des machines mécaniques à cylindres de plus en plus complexes basées sur
+le principe de substitution polyalphabétique comme le chiffre de Vigenère. La plus connue de ces machines est la machine Enigma.
+##################################################################################################################################
+*/
 
 package main
 import (
@@ -18,14 +27,14 @@ import (
 func main() {
 	// #########################################################################################################################
 	// Variables
-	var Message string
-	var MessageOutput string
 	var MessageProvided string
 	var MessageCryptedProvided string
 	var MessageLength int
 	var KeyProvided string
 	var KeyString string
 	var KeyStringLength int
+	var KeyStringMessageLength string
+	var CryptedString string
 	var action int
 
 	// #########################################################################################################################
@@ -74,49 +83,6 @@ func main() {
 	fmt.Println("Length: ",KeyStringLength)
 
 	// #########################################################################################################################
-	// Crypting map = encryption key
-	fmt.Println()
-	fmt.Println("------------------------------------------------------------------------------------------------------------")
-	Key := map[string]string {
-		"a" : "r",
-		"b" : "f",
-		"c" : "x",
-		"d" : "p",
-		"e" : "c",
-		"f" : "l",
-		"g" : "d",
-		"h" : "j",
-		"i" : "m",
-		"j" : "q",
-		"k" : "a",
-		"l" : "v",
-		"m" : "i",
-		"n" : "w",
-		"o" : "k",
-		"p" : "b",
-		"q" : "s",
-		"r" : "z",
-		"s" : "g",
-		"t" : "u",
-		"u" : "e",
-		"v" : "t",
-		"w" : "h",
-		"x" : "o",
-		"y" : "y",
-		"z" : "n",
-	}
-	fmt.Println("           key: ",Key)
-
-	// #########################################################################################################################
-	// Building the reverse map for decrypting operations
-	DecryptKey := make(map[string]string,len(Key))
-	for k,v := range Key {
-		DecryptKey[v] = k
-	}
-	fmt.Println("Decrypting key: ",DecryptKey)
-	fmt.Println()
-
-	// #########################################################################################################################
 	// CRYPTING
 	if action==1 {
 		MessageProvided = "je suis venu jai vu jai vaincu"
@@ -130,30 +96,69 @@ func main() {
 		}
 		MessageLength = len(MessageProvided)
 
-		//MessageSlice := make([]string, MessageLength)
-		MessageSlice := make([]rune, MessageLength)
+		MessageSlice := make([]string, MessageLength)
+		MessageRuneSlice := make([]rune, MessageLength)
 		for i,c := range MessageProvided {
-			//MessageSlice[i] = string(c)
-			MessageSlice[i] = c
+			MessageSlice[i] = string(c)
+			MessageRuneSlice[i] = c
 		}
-		fmt.Println("Clear Message Provided Slice: ", MessageSlice)
 
 		KeySlice := make([]string, MessageLength)
+		KeyRuneSlice := make([]rune, MessageLength)
+		KeyStringMessageLength = ""
 		for i:=0; i<MessageLength; i++ {
-			KeySlice[i] = string(KeyString[i % KeyStringLength])
+			//KeySlice[i] = string(KeyString[i % KeyStringLength])
+			KeyStringMessageLength = KeyStringMessageLength + string(KeyString[i % KeyStringLength])
 		}
-		fmt.Println("Key Slice                   : ", KeySlice)
 
-		//CryptedSlice := make([]string, MessageLength)
-		//for i:=0; i<MessageLength; i++ {
-			//CryptedSlice[i] = string(MessageSlice[i] + KeySlice[i])
-		//}
+		//fmt.Println("Key String Message Length   : ", KeyStringMessageLength)
 
+		for i,c := range KeyStringMessageLength {
+			KeySlice[i] = string(c)
+			KeyRuneSlice[i] = c
+		}
 
 		fmt.Println()
 		fmt.Println("------------------------------------------------------------------------------------------------------------")
-		fmt.Println("Clear Message Provided:   ", MessageProvided, " --> Encrypted Message: ", Message)
-		fmt.Println("Clear Message Provided:   ", MessageProvided, " --> Encrypted Formatted Output: ", MessageOutput)
+		fmt.Println("Clear Message Provided Slice     : ", MessageSlice)
+		fmt.Println("Key Slice                        : ", KeySlice)
+		//fmt.Println("------------------------------------------------------------------------------------------------------------")
+		//fmt.Println("Clear Rune Message Provided Slice: ", MessageRuneSlice)
+		//fmt.Println("Key Rune Slice                   : ", KeyRuneSlice)
+
+		CryptedRuneSlice := make([]rune, MessageLength)
+		CryptedSlice := make([]string, MessageLength)
+		CryptedString = ""
+		for i:=0; i<MessageLength; i++ {
+			if MessageSlice[i] != " " {
+				CryptedRuneSlice[i] = ( MessageRuneSlice[i] - 97 + KeyRuneSlice[i] - 97 ) % 26 + 97
+				/*
+				Explanation:
+				------------------------------------------------------------------------------------------------------------
+				Clear Message Provided Slice     :  [a b c]
+				Key Slice                        :  [a b c]
+				------------------------------------------------------------------------------------------------------------
+				Clear Rune Message Provided Slice:  [97 98 99]   => msgrune-97=[0 1 2]
+				Key Rune Slice                   :  [97 99 101]  => keyrune-97=[0 2 4]  (key=a means no change so +0)
+				------------------------------------------------------------------------------------------------------------
+				Crypted Rune Message Slice       :  [97 99 101]  = (msgrune-97+keyrune-97)%26+97
+				Crypted Message Slice            :  [a c e]
+				*/
+			} else {
+				CryptedRuneSlice[i] = MessageRuneSlice[i] // = rune of " "
+			}
+				CryptedSlice[i] = string(CryptedRuneSlice[i])
+				CryptedString = CryptedString + CryptedSlice[i]
+		}
+
+		fmt.Println("------------------------------------------------------------------------------------------------------------")
+		//fmt.Println("Crypted Rune Message Slice       : ", CryptedRuneSlice)
+		fmt.Println("Crypted Message Slice            : ", CryptedSlice)
+
+		fmt.Println()
+		fmt.Println("------------------------------------------------------------------------------------------------------------")
+		fmt.Println("Clear Message Provided:   ", MessageProvided)
+		fmt.Println("  --> Crypted Message:    ", CryptedString)
 
 	// #########################################################################################################################
 	// DECRYPTING
@@ -163,17 +168,9 @@ func main() {
 		if scanner.Scan() {
 			MessageCryptedProvided = scanner.Text()
 		}
-
-		Message = ""
-		for _,c := range MessageCryptedProvided {
-			if string(c) != " " {
-				Message = Message + DecryptKey[string(c)]
-			}
-		}
-
 		fmt.Println()
 		fmt.Println("------------------------------------------------------------------------------------------------------------")
-		fmt.Println("Crypted Message Provided: ", MessageCryptedProvided, " --> Decrypted Message: ", Message)
+		fmt.Println("Crypted Message Provided:   ", MessageCryptedProvided)
 
 	}
 
