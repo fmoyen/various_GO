@@ -30,11 +30,13 @@ func main() {
 	var MessageProvided string
 	var MessageCryptedProvided string
 	var MessageLength int
+	var MessageCryptedLength int
 	var KeyProvided string
 	var KeyString string
 	var KeyStringLength int
 	var KeyStringMessageLength string
 	var CryptedString string
+	var MessageString string
 	var action int
 
 	// #########################################################################################################################
@@ -121,9 +123,8 @@ func main() {
 		fmt.Println()
 		fmt.Println("------------------------------------------------------------------------------------------------------------")
 		fmt.Println("Clear Message Provided Slice     : ", MessageSlice)
+		//fmt.Println("Clear Message Provided Rune Slice: ", MessageRuneSlice)
 		fmt.Println("Key Slice                        : ", KeySlice)
-		//fmt.Println("------------------------------------------------------------------------------------------------------------")
-		//fmt.Println("Clear Rune Message Provided Slice: ", MessageRuneSlice)
 		//fmt.Println("Key Rune Slice                   : ", KeyRuneSlice)
 
 		CryptedRuneSlice := make([]rune, MessageLength)
@@ -168,9 +169,75 @@ func main() {
 		if scanner.Scan() {
 			MessageCryptedProvided = scanner.Text()
 		}
+		MessageCryptedLength = len(MessageCryptedProvided)
+
+		MessageCryptedSlice := make([]string, MessageCryptedLength)
+		MessageCryptedRuneSlice := make([]rune, MessageCryptedLength)
+		for i,c := range MessageCryptedProvided {
+			MessageCryptedSlice[i] = string(c)
+			MessageCryptedRuneSlice[i] = c
+		}
+
+		KeySlice := make([]string, MessageCryptedLength)
+		KeyRuneSlice := make([]rune, MessageCryptedLength)
+		KeyStringMessageLength = ""
+		for i:=0; i<MessageCryptedLength; i++ {
+			//KeySlice[i] = string(KeyString[i % KeyStringLength])
+			KeyStringMessageLength = KeyStringMessageLength + string(KeyString[i % KeyStringLength])
+		}
+
+		//fmt.Println("Key String Message Length   : ", KeyStringMessageLength)
+
+		for i,c := range KeyStringMessageLength {
+			KeySlice[i] = string(c)
+			KeyRuneSlice[i] = c
+		}
+
+		fmt.Println()
+		fmt.Println("------------------------------------------------------------------------------------------------------------")
+		fmt.Println("Crypted Message Provided Slice     : ", MessageCryptedSlice)
+		//fmt.Println("Crypted Message Rune Provided Slice: ", MessageCryptedRuneSlice)
+		fmt.Println("Key Slice                          : ", KeySlice)
+		//fmt.Println("Key Rune Slice                     : ", KeyRuneSlice)
+
+		MessageRuneSlice := make([]rune, MessageCryptedLength)
+		MessageSlice := make([]string, MessageCryptedLength)
+		MessageString = ""
+		for i:=0; i<MessageCryptedLength; i++ {
+			if MessageCryptedSlice[i] != " " {
+				tempo :=  MessageCryptedRuneSlice[i] - 97 - ( KeyRuneSlice[i] - 97 )
+				if tempo < 0 {
+					tempo = tempo + 26
+				}
+				MessageRuneSlice[i] = tempo + 97
+				/*
+				Explanation:
+				------------------------------------------------------------------------------------------------------------
+				Crypted Message Provided Slice      :  [a c e]
+				Key Slice                           :  [a b c]
+				------------------------------------------------------------------------------------------------------------
+				Crypted Rune Message Provided Slice :  [97 99 101]  => msgrune-97=[0 1 2]
+				Key Rune Slice                      :  [97 98 99]   => keyrune-97=[0 2 4]  (key=a means no change so +0)
+				------------------------------------------------------------------------------------------------------------
+				Clear Rune Message Slice            :  [97 98 99]   = 97+ [msgrune-97-(keyrune-97) +(26 if <0)]
+				Clear Message Slice                 :  [a b c]
+				*/
+			} else {
+				MessageRuneSlice[i] = MessageCryptedRuneSlice[i] // = rune of " "
+			}
+				MessageSlice[i] = string(MessageRuneSlice[i])
+				MessageString = MessageString + MessageSlice[i]
+		}
+
+		fmt.Println("------------------------------------------------------------------------------------------------------------")
+		//fmt.Println("Clear Rune Message Slice           : ", MessageRuneSlice)
+		fmt.Println("Clear Message Slice                : ", MessageSlice)
+
 		fmt.Println()
 		fmt.Println("------------------------------------------------------------------------------------------------------------")
 		fmt.Println("Crypted Message Provided:   ", MessageCryptedProvided)
+		fmt.Println("  --> Clear Message:        ", MessageString)
+
 
 	}
 
